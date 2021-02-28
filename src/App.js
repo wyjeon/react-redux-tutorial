@@ -1,7 +1,15 @@
 import React from 'react';
+import Counter from './components/Counter';
+import Todos from './components/Todos';
 
 function App() {
-  return <div>React Redux</div>;
+  return (
+    <div>
+      <Counter number={0} />
+      <hr />
+      <Todos />
+    </div>
+  );
 }
 
 export default App;
