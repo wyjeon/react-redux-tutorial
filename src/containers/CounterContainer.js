@@ -1,30 +1,16 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Counter from '../components/Counter';
 import { decrease, increase } from '../modules/counter';
 
-function CounterContainer({ number, increase, decrease }) {
+function CounterContainer() {
+  const number = useSelector(state => state.counter.number); // connect -> useSelector
+  const dispatch = useDispatch(); // 컴포넌트 내부에서 스토어의 내장 함수 dispatch를 사용할 수 있게 해준다.
+  const onIncrease = useCallback(() => dispatch(increase()), [dispatch]); // 숫자가 바뀌어서 리렌더링될 때마다 onIncrease, onDecrease 함수가 새롭게 만들어지는데
+  const onDecrease = useCallback(() => dispatch(decrease()), [dispatch]); // useCallback으로 컴포넌트 성능을 최적화한다.
   return (
-    <Counter number={number} onIncrease={increase} onDecrease={decrease} />
+    <Counter number={number} onIncrease={onIncrease} onDecrease={onDecrease} />
   );
 }
 
-// mapStateToProps: 리덕스 스토어 안의 상태(state) -> 컴포넌트의 props
-// state를 파라미터로 받아온다. -> 이 값은 현재 스토어가 지니고 있는 상태
-const mapStateToProps = state => ({
-  number: state.counter.number,
-});
-
-// mapDispatchToProps: 액션 생성 함수 -> 컴포넌트의 props
-// store의 내장 함수 dispatch를 파라미터로 받아온다.
-const mapDispatchToProps = dispatch => ({
-  // 임시 함수
-  increase: () => {
-    dispatch(increase());
-  },
-  decrease: () => {
-    dispatch(decrease());
-  },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CounterContainer);
+export default CounterContainer;
